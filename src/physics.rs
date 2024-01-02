@@ -1,6 +1,6 @@
 use bevy::{prelude::*, sprite::collide_aabb::*};
 
-use crate::{ball::Ball, bricks::Brick, CollisionSound, Scoreboard};
+use crate::{ball::Ball, bricks::Brick, game::CollisionSound, scoreboard::Scoreboard};
 
 #[derive(Component, Deref, DerefMut)]
 pub struct Velocity(pub Vec2);

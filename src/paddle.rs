@@ -19,18 +19,9 @@ impl Plugin for PaddlePlugin {
     }
 }
 
-/**
-Paddle is the platform that is controlled by the player.
-
-- `A` keys will move it to the left.
-- `D` keys will move it to the right.
-*/
 #[derive(Component)]
 struct Paddle;
 
-/**
-Spawns the paddle at its initial location.
-*/
 fn setup_paddle(mut commands: Commands) {
     commands.spawn((
         SpriteBundle {
@@ -50,9 +41,6 @@ fn setup_paddle(mut commands: Commands) {
     ));
 }
 
-/**
-Moves the paddle on each tick.
- */
 fn move_paddle(
     input: Res<Input<KeyCode>>,
     time_step: Res<Time<Fixed>>,
