@@ -4,7 +4,6 @@ use bevy::prelude::*;
 pub struct CollisionSound(Handle<AudioSource>);
 
 pub struct GamePlugin;
-
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9)))
@@ -14,10 +13,10 @@ impl Plugin for GamePlugin {
 }
 
 fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
-    // camera
+    // spawn the camera
     commands.spawn(Camera2dBundle::default());
 
-    // sound
+    // add collision sound
     let ball_collision_sound = asset_server.load("sounds/breakout_collision.ogg");
     commands.insert_resource(CollisionSound(ball_collision_sound));
 }

@@ -16,7 +16,6 @@ const WALL_BLOCK_HEIGHT: f32 = TOP_WALL - BOTTOM_WALL;
 const WALL_COLOR: Color = Color::rgb(0.8, 0.8, 0.8);
 
 pub struct WallPlugin;
-
 impl Plugin for WallPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_wall);
@@ -33,79 +32,28 @@ fn setup_wall(mut commands: Commands) {
     let vertical_wall_size = vec2(WALL_THICKNESS, WALL_BLOCK_HEIGHT + WALL_THICKNESS);
     let horizontal_wall_size = vec2(WALL_BLOCK_WIDTH + WALL_THICKNESS, WALL_THICKNESS);
 
-    // left wall
-    commands.spawn(WallBundle {
-        sprite_bundle: SpriteBundle {
-            transform: Transform {
-                translation: vec3(LEFT_WALL, 0.0, 0.0),
-                ..default()
-            },
-            sprite: Sprite {
-                color: WALL_COLOR,
-                custom_size: Some(vertical_wall_size),
-                ..default()
-            },
-            ..default()
-        },
-        collider: Collider {
-            size: vertical_wall_size,
-        },
-    });
+    let walls = [
+        (vec3(LEFT_WALL, 0.0, 0.0), vertical_wall_size),
+        (vec3(RIGHT_WALL, 0.0, 0.0), vertical_wall_size),
+        (vec3(0.0, BOTTOM_WALL, 0.0), horizontal_wall_size),
+        (vec3(0.0, TOP_WALL, 0.0), horizontal_wall_size),
+    ];
 
-    // right wall
-    commands.spawn(WallBundle {
-        sprite_bundle: SpriteBundle {
-            transform: Transform {
-                translation: vec3(RIGHT_WALL, 0.0, 0.0),
+    for (wall_pos, wall_size) in walls {
+        commands.spawn(WallBundle {
+            sprite_bundle: SpriteBundle {
+                transform: Transform {
+                    translation: wall_pos,
+                    ..default()
+                },
+                sprite: Sprite {
+                    color: WALL_COLOR,
+                    custom_size: Some(wall_size),
+                    ..default()
+                },
                 ..default()
             },
-            sprite: Sprite {
-                color: WALL_COLOR,
-                custom_size: Some(vertical_wall_size),
-                ..default()
-            },
-            ..default()
-        },
-        collider: Collider {
-            size: vertical_wall_size,
-        },
-    });
-
-    // bottom wall
-    commands.spawn(WallBundle {
-        sprite_bundle: SpriteBundle {
-            transform: Transform {
-                translation: vec3(0.0, BOTTOM_WALL, 0.0),
-                ..default()
-            },
-            sprite: Sprite {
-                color: WALL_COLOR,
-                custom_size: Some(horizontal_wall_size),
-                ..default()
-            },
-            ..default()
-        },
-        collider: Collider {
-            size: horizontal_wall_size,
-        },
-    });
-
-    // top wall
-    commands.spawn(WallBundle {
-        sprite_bundle: SpriteBundle {
-            transform: Transform {
-                translation: vec3(0.0, TOP_WALL, 0.0),
-                ..default()
-            },
-            sprite: Sprite {
-                color: WALL_COLOR,
-                custom_size: Some(horizontal_wall_size),
-                ..default()
-            },
-            ..default()
-        },
-        collider: Collider {
-            size: horizontal_wall_size,
-        },
-    });
+            collider: Collider { size: wall_size },
+        });
+    }
 }

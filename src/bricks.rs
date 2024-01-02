@@ -17,7 +17,6 @@ const GAP_BETWEEN_BRICKS_AND_SIDES: f32 = 20.0;
 pub struct Brick;
 
 pub struct BricksPlugin;
-
 impl Plugin for BricksPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_bricks);

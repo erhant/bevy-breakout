@@ -6,7 +6,6 @@ const TEXT_COLOR: Color = Color::rgb(0.5, 0.5, 1.0);
 const SCORE_COLOR: Color = Color::rgb(1.0, 0.5, 0.5);
 
 pub struct ScoreboardPlugin;
-
 impl Plugin for ScoreboardPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(Scoreboard { score: 0 })

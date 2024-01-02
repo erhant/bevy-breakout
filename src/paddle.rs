@@ -11,7 +11,6 @@ const PADDLE_COLOR: Color = Color::rgb(0.3, 0.3, 0.7);
 const PADDLE_SPEED: f32 = 500.0;
 
 pub struct PaddlePlugin;
-
 impl Plugin for PaddlePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_paddle)
