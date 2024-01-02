@@ -1,0 +1,17 @@
+[package]
+name = "bevy-breakout"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# Small amount of optimizations in debug mode
+[profile.dev]
+opt-level = 1
+
+# High amount of optimizations for packages
+[profile.dev.package."*"]
+opt-level = 3
+
+[dependencies]
+bevy = "0.12.1"
