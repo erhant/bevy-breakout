@@ -16,7 +16,7 @@ fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
     // spawn the camera
     commands.spawn(Camera2dBundle::default());
 
-    // add collision sound
+    // add collision sound as a resource
     let ball_collision_sound = asset_server.load("sounds/breakout_collision.ogg");
     commands.insert_resource(CollisionSound(ball_collision_sound));
 }

@@ -32,12 +32,15 @@ fn check_ball_collisions(
     mut commands: Commands,
     mut score: ResMut<Scoreboard>,
     collision_sound: Res<CollisionSound>,
+    // query all balls
     mut ball_query: Query<(&mut Velocity, &Transform, &Ball)>,
-    // optional Brick means that we "may" have a brick here
+    // query colliders, option brick will be true if this is some brick
     mut collider_query: Query<(Entity, &Transform, &Collider, Option<&Brick>)>,
 ) {
+    // iterate over the elements in a query using a for loop!
     for (mut ball_velocity, ball_transform, ball) in &mut ball_query {
         for (other_entity, transform, other, opt_brick) in &mut collider_query {
+            // find collision via Bevy built-in utility
             let collision = collide(
                 ball_transform.translation,
                 ball.size,
@@ -48,6 +51,7 @@ fn check_ball_collisions(
             let mut reflect_x = false;
             let mut reflect_y = false;
             if let Some(collision) = collision {
+                // reflect ball on collision
                 match collision {
                     Collision::Left => reflect_x = ball_velocity.x > 0.0,
                     Collision::Right => reflect_x = ball_velocity.x < 0.0,
@@ -55,7 +59,6 @@ fn check_ball_collisions(
                     Collision::Bottom => reflect_y = ball_velocity.y > 0.0,
                     Collision::Inside => { /* do nothing */ }
                 }
-
                 if reflect_x {
                     ball_velocity.x *= -1.;
                 }
@@ -63,14 +66,13 @@ fn check_ball_collisions(
                     ball_velocity.y *= -1.;
                 }
 
+                // if brick is hit, remove it and increment score
                 if opt_brick.is_some() {
                     score.score += 1;
-
-                    // if brick is hit, remove it
                     commands.entity(other_entity).despawn();
                 }
 
-                // play sound
+                // play sound on collision
                 commands.spawn(AudioBundle {
                     source: collision_sound.clone(),
                     settings: PlaybackSettings::DESPAWN,

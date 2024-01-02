@@ -21,7 +21,7 @@ impl Plugin for BallPlugin {
 }
 
 fn setup_ball(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let ball_tex = asset_server.load("textures/circle.png");
+    let ball_texture = asset_server.load("textures/circle.png");
     commands.spawn((
         SpriteBundle {
             transform: Transform {
@@ -33,7 +33,7 @@ fn setup_ball(mut commands: Commands, asset_server: Res<AssetServer>) {
                 custom_size: Some(BALL_SIZE),
                 ..Default::default()
             },
-            texture: ball_tex.clone(),
+            texture: ball_texture.clone(),
             ..Default::default()
         },
         Ball { size: BALL_SIZE },

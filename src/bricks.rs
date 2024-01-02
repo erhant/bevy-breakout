@@ -5,7 +5,6 @@ use crate::{
     wall::{BOTTOM_WALL, LEFT_WALL, RIGHT_WALL, TOP_WALL},
 };
 
-// bricks
 const BRICK_SIZE: Vec2 = Vec2::new(100., 30.);
 const BRICK_COLOR: Color = Color::rgb(0.5, 0.5, 1.0);
 const GAP_BETWEEN_PADDLE_AND_BRICKS: f32 = 270.0;

@@ -4,6 +4,12 @@
 
 This is a didactic-purposed game, to learn more about Bevy and Rust in general.
 
+## To-Do
+
+- Add "Start Game" option on menu.
+- Add "Scores" option on menu.
+- Add loss on ball miss.
+
 ## Setup
 
 Clone the repository, and then install the packages:

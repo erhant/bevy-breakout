@@ -56,13 +56,14 @@ fn move_paddle(
         direction += 1.0;
     }
 
-    let new_x = paddle_transform.translation.x
-        + direction
-            * PADDLE_SPEED
-            * time_step
-                .delta_seconds()
-                .min(RIGHT_WALL - (WALL_THICKNESS + PADDLE_SIZE.x) * 0.5)
-                .max(LEFT_WALL + (WALL_THICKNESS + PADDLE_SIZE.x) * 0.5);
+    // translate paddle w.r.t direction & speed
+    let new_x =
+        paddle_transform.translation.x + direction * PADDLE_SPEED * time_step.delta_seconds();
 
-    paddle_transform.translation.x = new_x;
+    // clamp it so that it does not go out of bounds
+    let new_x_clamped = new_x
+        .min(RIGHT_WALL - (WALL_THICKNESS + PADDLE_SIZE.x) * 0.5)
+        .max(LEFT_WALL + (WALL_THICKNESS + PADDLE_SIZE.x) * 0.5);
+
+    paddle_transform.translation.x = new_x_clamped;
 }
