@@ -9,12 +9,10 @@ const BACKGROUND_COLOR: Color = MAIN_THEME.neutral;
 // Or https://github.com/bevyengine/bevy/blob/main/examples/ecs/state.rs
 #[derive(States, Default, Clone, Eq, PartialEq, Debug, Hash)]
 pub enum GameState {
-    // We start in the main-menu.
+    // player is in the main-menu
     #[default]
     Menu,
-    // Waiting for player to start the game
-    Ready,
-    // Game logic is executed
+    // player is playing the game
     Playing,
 }
 
@@ -32,15 +30,13 @@ fn setup_game(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 }
 
-/// Close the focused window whenever the escape key (<kbd>Esc</kbd>) is pressed
-///
-/// This is useful for examples or prototyping.
-pub fn back_to_menu(
-    windows: Query<&Window>,
+// why does this not work?
+fn back_to_menu(
+    windows: Query<(Entity, &Window)>,
     input: Res<Input<KeyCode>>,
     mut state: ResMut<NextState<GameState>>,
 ) {
-    for window in windows.iter() {
+    for (entity, window) in windows.iter() {
         if !window.focused {
             continue;
         }

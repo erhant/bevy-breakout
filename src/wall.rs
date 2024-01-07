@@ -25,7 +25,8 @@ const WALL_COLOR: Color = MAIN_THEME.error;
 pub struct WallPlugin;
 impl Plugin for WallPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Playing), setup_wall)
+        app.add_systems(OnEnter(GameState::Playing), setup_walls)
+            .add_systems(OnExit(GameState::Playing), cleanup_walls)
             .add_systems(
                 FixedUpdate,
                 wall_ball_collision.run_if(in_state(GameState::Playing)),
@@ -34,7 +35,7 @@ impl Plugin for WallPlugin {
 }
 
 #[derive(PartialEq)]
-pub enum WallSide {
+enum WallSideEnum {
     Left,
     Right,
     Top,
@@ -42,18 +43,18 @@ pub enum WallSide {
 }
 
 #[derive(Component)]
-struct Side {
-    side: WallSide,
+struct WallSide {
+    side: WallSideEnum,
 }
 
 #[derive(Bundle)]
 struct WallBundle {
     sprite_bundle: SpriteBundle,
     collider: Collider,
-    side: Side,
+    side: WallSide,
 }
 
-fn setup_wall(mut commands: Commands) {
+fn setup_walls(mut commands: Commands) {
     let vertical_wall_size = vec2(WALL_THICKNESS, WALL_BLOCK_HEIGHT + WALL_THICKNESS);
     let horizontal_wall_size = vec2(WALL_BLOCK_WIDTH + WALL_THICKNESS, WALL_THICKNESS);
 
@@ -61,22 +62,22 @@ fn setup_wall(mut commands: Commands) {
         (
             vec3(LEFT_WALL, 0.0, 0.0),
             vertical_wall_size,
-            WallSide::Left,
+            WallSideEnum::Left,
         ),
         (
             vec3(RIGHT_WALL, 0.0, 0.0),
             vertical_wall_size,
-            WallSide::Right,
+            WallSideEnum::Right,
         ),
         (
             vec3(0.0, BOTTOM_WALL, 0.0),
             horizontal_wall_size,
-            WallSide::Bottom,
+            WallSideEnum::Bottom,
         ),
         (
             vec3(0.0, TOP_WALL, 0.0),
             horizontal_wall_size,
-            WallSide::Top,
+            WallSideEnum::Top,
         ),
     ];
 
@@ -95,8 +96,14 @@ fn setup_wall(mut commands: Commands) {
                 ..default()
             },
             collider: Collider { size: wall_size },
-            side: Side { side: wall_side },
+            side: WallSide { side: wall_side },
         });
+    }
+}
+
+fn cleanup_walls(mut commands: Commands, menu: Query<Entity, With<WallSide>>) {
+    for entity in menu.iter() {
+        commands.entity(entity).despawn_recursive();
     }
 }
 
@@ -105,7 +112,8 @@ fn wall_ball_collision(
     collision_sound: Res<CollisionSound>,
     lose_sound: Res<LoseGameSound>,
     mut ball_query: Query<(Entity, &mut Velocity, &Transform, &Ball)>,
-    mut wall_query: Query<(&Transform, &Collider, &Side), With<Side>>,
+    mut wall_query: Query<(&Transform, &Collider, &WallSide)>,
+    mut state: ResMut<NextState<GameState>>,
 ) {
     // iterate over the elements in a query using a for loop!
     for (ball_entity, mut ball_velocity, ball_transform, ball) in &mut ball_query {
@@ -136,12 +144,15 @@ fn wall_ball_collision(
                     ball_velocity.y *= -1.;
                 }
 
-                if side.side == WallSide::Bottom {
+                if side.side == WallSideEnum::Bottom {
+                    // lose game
                     commands.spawn(AudioBundle {
                         source: lose_sound.clone(),
                         settings: PlaybackSettings::DESPAWN,
                     });
                     commands.entity(ball_entity).despawn();
+
+                    state.set(GameState::Menu);
                 } else {
                     commands.spawn(AudioBundle {
                         source: collision_sound.clone(),

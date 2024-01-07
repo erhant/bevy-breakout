@@ -120,6 +120,12 @@ fn brick_ball_collision(
 
                 // if brick is hit, remove it and increment score
                 score.score += 1;
+                score.highscore = if score.highscore < score.score {
+                    score.score
+                } else {
+                    score.highscore
+                };
+
                 commands.entity(other_entity).despawn();
 
                 // play sound on collision
