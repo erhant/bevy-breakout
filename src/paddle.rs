@@ -17,7 +17,7 @@ const PADDLE_INITIAL_POS: Vec3 = vec3(0., BOTTOM_WALL + 60., 0.);
 const PADDLE_SIZE: Vec2 = Vec2::new(120.0, 20.0);
 const PADDLE_COLOR: Color = MAIN_THEME.primary;
 const PADDLE_SPEED: f32 = 700.0;
-const PADDLE_HIT_BALL_SPEEDUP: f32 = 1.005;
+// const PADDLE_HIT_BALL_SPEEDUP: f32 = 1.005;
 
 pub struct PaddlePlugin;
 impl Plugin for PaddlePlugin {
@@ -93,14 +93,14 @@ fn ball_paddle_collision(
     mut paddle_query: Query<(&Transform, &Collider), With<Paddle>>,
 ) {
     // iterate over the elements in a query using a for loop!
-    for (mut ball_velocity, ball_transform, ball) in &mut ball_query {
-        for (transform, other) in &mut paddle_query {
+    for (mut ball_velocity, ball_transform, ball_collider) in &mut ball_query {
+        for (paddle_transform, paddle_collider) in &mut paddle_query {
             // find collision via Bevy built-in utility
             let collision = collide(
                 ball_transform.translation,
-                ball.size,
-                transform.translation,
-                other.size,
+                ball_collider.size,
+                paddle_transform.translation,
+                paddle_collider.size,
             );
 
             if let Some(collision) = collision {
@@ -121,9 +121,21 @@ fn ball_paddle_collision(
                     ball_velocity.y *= -1.;
                 }
 
+                let ball_x = ball_transform.translation.x;
+                let ball_y = ball_transform.translation.y;
+                info!(ball_x, ball_y);
+
+                let paddle_x = paddle_transform.translation.x;
+                let paddle_y = paddle_transform.translation.y;
+                info!(paddle_x, paddle_y);
+
+                // add x speed w.r.t hit position
+                let diff_x = ball_x - paddle_x;
+                ball_velocity.x *= diff_x * 1.2;
+
                 // if paddle is hit, increase speed
-                ball_velocity.x *= PADDLE_HIT_BALL_SPEEDUP;
-                ball_velocity.y *= PADDLE_HIT_BALL_SPEEDUP;
+                // ball_velocity.x *= PADDLE_HIT_BALL_SPEEDUP;
+                // ball_velocity.y *= PADDLE_HIT_BALL_SPEEDUP;
 
                 // play sound on collision
                 commands.spawn(AudioBundle {

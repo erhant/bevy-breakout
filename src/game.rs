@@ -30,7 +30,7 @@ fn setup_game(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
 }
 
-// why does this not work?
+// FIXME: pressing ESC does not work?
 fn back_to_menu(
     windows: Query<(Entity, &Window)>,
     input: Res<Input<KeyCode>>,
