@@ -1,5 +1,9 @@
 use bevy::prelude::*;
 
+use crate::theme::MAIN_THEME;
+
+const BACKGROUND_COLOR: Color = MAIN_THEME.Neutral;
+
 #[derive(Resource, Default, Deref, DerefMut)]
 pub struct CollisionSound(Handle<AudioSource>);
 
@@ -9,7 +13,7 @@ pub struct LoseGameSound(Handle<AudioSource>);
 pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9)))
+        app.insert_resource(ClearColor(BACKGROUND_COLOR))
             .add_systems(Update, bevy::window::close_on_esc)
             .add_systems(Startup, setup_game);
     }

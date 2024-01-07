@@ -1,9 +1,11 @@
 use bevy::{math::*, prelude::*};
 
+use crate::theme::MAIN_THEME;
+
 const SCOREBOARD_FONT_SIZE: f32 = 40.0;
 const SCOREBOARD_TEXT_PADDING: Val = Val::Px(5.0);
-const TEXT_COLOR: Color = Color::rgb(0.5, 0.5, 1.0);
-const SCORE_COLOR: Color = Color::rgb(1.0, 0.5, 0.5);
+const TEXT_COLOR: Color = MAIN_THEME.Info;
+const SCORE_COLOR: Color = MAIN_THEME.Success;
 
 pub struct ScoreboardPlugin;
 impl Plugin for ScoreboardPlugin {

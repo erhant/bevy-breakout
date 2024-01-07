@@ -8,14 +8,15 @@ use crate::{
     ball::Ball,
     game::CollisionSound,
     physics::{Collider, Velocity},
+    theme::MAIN_THEME,
     wall::{BOTTOM_WALL, LEFT_WALL, RIGHT_WALL, WALL_THICKNESS},
 };
 
 const PADDLE_INITIAL_POS: Vec3 = vec3(0., BOTTOM_WALL + 60., 0.);
 const PADDLE_SIZE: Vec2 = Vec2::new(120.0, 20.0);
-const PADDLE_COLOR: Color = Color::rgb(0.3, 0.3, 0.7);
-const PADDLE_SPEED: f32 = 500.0;
-const PADDLE_HIT_BALL_SPEEDUP: f32 = 1.02;
+const PADDLE_COLOR: Color = MAIN_THEME.Primary;
+const PADDLE_SPEED: f32 = 700.0;
+const PADDLE_HIT_BALL_SPEEDUP: f32 = 1.005;
 
 pub struct PaddlePlugin;
 impl Plugin for PaddlePlugin {

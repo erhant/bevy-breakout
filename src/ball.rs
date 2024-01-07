@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
-use crate::physics::Velocity;
+use crate::{physics::Velocity, theme::MAIN_THEME};
 
-const BALL_COLOR: Color = Color::rgb(1.0, 0.5, 0.5);
+const BALL_COLOR: Color = MAIN_THEME.Secondary;
 const BALL_STARTING_POSITION: Vec3 = Vec3::new(0.0, -50.0, 1.0);
 const BALL_SIZE: Vec2 = Vec2::new(30.0, 30.0);
 const BALL_SPEED: f32 = 800.0;

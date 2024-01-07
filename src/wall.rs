@@ -2,14 +2,13 @@ use bevy::{
     math::{vec2, vec3},
     prelude::*,
     sprite::collide_aabb::{collide, Collision},
-    utils::info,
 };
 
 use crate::{
     ball::Ball,
     game::{CollisionSound, LoseGameSound},
     physics::{Collider, Velocity},
-    scoreboard::Scoreboard,
+    theme::MAIN_THEME,
 };
 
 pub const LEFT_WALL: f32 = -450.;
@@ -20,7 +19,7 @@ pub const TOP_WALL: f32 = 300.;
 pub const WALL_THICKNESS: f32 = 10.0;
 const WALL_BLOCK_WIDTH: f32 = RIGHT_WALL - LEFT_WALL;
 const WALL_BLOCK_HEIGHT: f32 = TOP_WALL - BOTTOM_WALL;
-const WALL_COLOR: Color = Color::rgb(0.8, 0.8, 0.8);
+const WALL_COLOR: Color = MAIN_THEME.Error;
 
 pub struct WallPlugin;
 impl Plugin for WallPlugin {
@@ -134,7 +133,6 @@ fn wall_ball_collision(
                 }
 
                 if side.side == WallSide::Bottom {
-                    info("lost game");
                     commands.spawn(AudioBundle {
                         source: lose_sound.clone(),
                         settings: PlaybackSettings::DESPAWN,

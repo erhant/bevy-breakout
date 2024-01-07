@@ -9,11 +9,12 @@ use crate::{
     game::CollisionSound,
     physics::{Collider, Velocity},
     scoreboard::Scoreboard,
+    theme::MAIN_THEME,
     wall::{BOTTOM_WALL, LEFT_WALL, RIGHT_WALL, TOP_WALL},
 };
 
 const BRICK_SIZE: Vec2 = Vec2::new(100., 30.);
-const BRICK_COLOR: Color = Color::rgb(0.5, 0.5, 1.0);
+const BRICK_COLOR: Color = MAIN_THEME.Primary;
 const GAP_BETWEEN_PADDLE_AND_BRICKS: f32 = 270.0;
 const GAP_BETWEEN_BRICKS: f32 = 5.0;
 const GAP_BETWEEN_BRICKS_AND_CEILING: f32 = 20.0;
