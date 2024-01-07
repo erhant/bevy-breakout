@@ -14,9 +14,9 @@ use crate::{
 };
 
 const PADDLE_INITIAL_POS: Vec3 = vec3(0., BOTTOM_WALL + 60., 0.);
-const PADDLE_SIZE: Vec2 = Vec2::new(120.0, 20.0);
-const PADDLE_COLOR: Color = MAIN_THEME.primary;
-const PADDLE_SPEED: f32 = 700.0;
+const PADDLE_SIZE: Vec2 = Vec2::new(140.0, 20.0);
+const PADDLE_COLOR: Color = MAIN_THEME.accent;
+const PADDLE_SPEED: f32 = 600.0;
 // const PADDLE_HIT_BALL_SPEEDUP: f32 = 1.005;
 
 pub struct PaddlePlugin;
@@ -122,16 +122,16 @@ fn ball_paddle_collision(
                 }
 
                 let ball_x = ball_transform.translation.x;
-                let ball_y = ball_transform.translation.y;
-                info!(ball_x, ball_y);
+                // let ball_y = ball_transform.translation.y;
+                // info!(ball_x, ball_y);
 
                 let paddle_x = paddle_transform.translation.x;
-                let paddle_y = paddle_transform.translation.y;
-                info!(paddle_x, paddle_y);
+                // let paddle_y = paddle_transform.translation.y;
+                // info!(paddle_x, paddle_y);
 
                 // add x speed w.r.t hit position
                 let diff_x = ball_x - paddle_x;
-                ball_velocity.x *= diff_x * 1.2;
+                ball_velocity.x += diff_x * 2.;
 
                 // if paddle is hit, increase speed
                 // ball_velocity.x *= PADDLE_HIT_BALL_SPEEDUP;

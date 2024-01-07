@@ -1,17 +1,12 @@
+<p align="center">
+  <img src="./misc/img.png" alt="logo" width="640">
+</p>
+
 # Bevy Breakout
 
 **A [Breakout](<https://en.wikipedia.org/wiki/Breakout_(video_game)>) game with Bevy game engine**.
 
-This is a didactic-purposed game, to learn more about Bevy and Rust in general.
-
-## To-Do
-
-- [x] Ball speed-up on paddle hit,
-- [ ] Check collision on high speeds, might be buggy.
-- [ ] Ball bounce w.r.t angle on the paddle.
-- [ ] Add loss on ball miss (i.e. hits bottom wall).
-- [ ] Add menu
-- [ ] Add start on click, ball starts in the middle.
+This is for educational-purposes, to learn more about Bevy and Rust in general.
 
 ## Setup
 

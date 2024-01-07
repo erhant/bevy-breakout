@@ -5,7 +5,7 @@ use crate::{game::GameState, physics::Velocity, theme::MAIN_THEME};
 const BALL_COLOR: Color = MAIN_THEME.secondary;
 const BALL_STARTING_POSITION: Vec3 = Vec3::new(0.0, -50.0, 1.0);
 const BALL_SIZE: Vec2 = Vec2::new(30.0, 30.0);
-const BALL_SPEED: f32 = 800.0;
+const BALL_SPEED: f32 = 700.0;
 const BALL_INITIAL_DIRECTION: Vec2 = Vec2::new(0., -1.);
 
 #[derive(Component)]
