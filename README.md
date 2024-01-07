@@ -6,9 +6,12 @@ This is a didactic-purposed game, to learn more about Bevy and Rust in general.
 
 ## To-Do
 
-- Add "Start Game" option on menu.
-- Add "Scores" option on menu.
-- Add loss on ball miss.
+- [x] Ball speed-up on paddle hit,
+- [ ] Check collision on high speeds, might be buggy.
+- [ ] Ball bounce w.r.t angle on the paddle.
+- [ ] Add loss on ball miss (i.e. hits bottom wall).
+- [ ] Add menu
+- [ ] Add start on click, ball starts in the middle.
 
 ## Setup
 
@@ -25,6 +28,12 @@ cargo run
 
 # alternative for a bit faster launch
 cargo run --features bevy/dynamic_linking
+```
+
+Lint usin Clippy:
+
+```sh
+cargo clippy
 ```
 
 ## Layout
@@ -46,7 +55,15 @@ fn main() {
 }
 ```
 
+# Assets
+
+Here are free websites to design assets:
+
+- https://sfxr.me/ to make 8-bit or 16-bit sounds.
+- https://www.piskelapp.com/ to design sprites.
+
 ## Resources
 
 - The starter code is written via [this video](https://www.youtube.com/watch?v=E9SzRc9HkOg) from [this repository](https://github.com/c-gamedev/bevy-breakout).
 - [This](https://www.youtube.com/watch?v=B6ZFuYYZCSY) is also a great Bevy tutorial.
+- Here is a nice [template](https://github.com/NiklasEi/bevy_game_template) as well.

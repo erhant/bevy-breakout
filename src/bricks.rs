@@ -1,12 +1,21 @@
-use bevy::{math::vec2, prelude::*};
+use bevy::{
+    math::vec2,
+    prelude::*,
+    sprite::collide_aabb::{collide, Collision},
+};
 
 use crate::{
-    physics::Collider,
+    ball::Ball,
+    game::GameState,
+    physics::{Collider, Velocity},
+    scoreboard::Scoreboard,
+    sounds::CollisionSound,
+    theme::MAIN_THEME,
     wall::{BOTTOM_WALL, LEFT_WALL, RIGHT_WALL, TOP_WALL},
 };
 
 const BRICK_SIZE: Vec2 = Vec2::new(100., 30.);
-const BRICK_COLOR: Color = Color::rgb(0.5, 0.5, 1.0);
+const BRICK_COLOR: Color = MAIN_THEME.primary;
 const GAP_BETWEEN_PADDLE_AND_BRICKS: f32 = 270.0;
 const GAP_BETWEEN_BRICKS: f32 = 5.0;
 const GAP_BETWEEN_BRICKS_AND_CEILING: f32 = 20.0;
@@ -18,7 +27,12 @@ pub struct Brick;
 pub struct BricksPlugin;
 impl Plugin for BricksPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_bricks);
+        app.add_systems(OnEnter(GameState::Playing), setup_bricks)
+            .add_systems(
+                FixedUpdate,
+                brick_ball_collision.run_if(in_state(GameState::Playing)),
+            )
+            .add_systems(OnExit(GameState::Playing), cleanup_bricks);
     }
 }
 
@@ -56,6 +70,70 @@ fn setup_bricks(mut commands: Commands) {
                 Brick,
                 Collider { size: BRICK_SIZE },
             ));
+        }
+    }
+}
+
+fn cleanup_bricks(mut commands: Commands, bricks: Query<Entity, With<Brick>>) {
+    for entity in bricks.iter() {
+        commands.entity(entity).despawn();
+    }
+}
+
+fn brick_ball_collision(
+    mut commands: Commands,
+    mut score: ResMut<Scoreboard>,
+    collision_sound: Res<CollisionSound>,
+    // query all balls
+    mut ball_query: Query<(&mut Velocity, &Transform, &Ball)>,
+    // query colliders, option brick will be true if this is some brick
+    mut brick_query: Query<(Entity, &Transform, &Collider), With<Brick>>,
+) {
+    // iterate over the elements in a query using a for loop!
+    for (mut ball_velocity, ball_transform, ball) in &mut ball_query {
+        for (other_entity, transform, other) in &mut brick_query {
+            // find collision via Bevy built-in utility
+            let collision = collide(
+                ball_transform.translation,
+                ball.size,
+                transform.translation,
+                other.size,
+            );
+
+            if let Some(collision) = collision {
+                // reflect ball on collision
+                let mut reflect_x = false;
+                let mut reflect_y = false;
+                match collision {
+                    Collision::Left => reflect_x = ball_velocity.x > 0.0,
+                    Collision::Right => reflect_x = ball_velocity.x < 0.0,
+                    Collision::Top => reflect_y = ball_velocity.y < 0.0,
+                    Collision::Bottom => reflect_y = ball_velocity.y > 0.0,
+                    Collision::Inside => { /* do nothing */ }
+                }
+                if reflect_x {
+                    ball_velocity.x *= -1.;
+                }
+                if reflect_y {
+                    ball_velocity.y *= -1.;
+                }
+
+                // if brick is hit, remove it and increment score
+                score.score += 1;
+                score.highscore = if score.highscore < score.score {
+                    score.score
+                } else {
+                    score.highscore
+                };
+
+                commands.entity(other_entity).despawn();
+
+                // play sound on collision
+                commands.spawn(AudioBundle {
+                    source: collision_sound.clone(),
+                    settings: PlaybackSettings::DESPAWN,
+                });
+            }
         }
     }
 }
