@@ -6,24 +6,28 @@ use bevy::{
 
 use crate::{
     ball::Ball,
-    game::CollisionSound,
+    game::GameState,
     physics::{Collider, Velocity},
+    sounds::CollisionSound,
     theme::MAIN_THEME,
     wall::{BOTTOM_WALL, LEFT_WALL, RIGHT_WALL, WALL_THICKNESS},
 };
 
 const PADDLE_INITIAL_POS: Vec3 = vec3(0., BOTTOM_WALL + 60., 0.);
 const PADDLE_SIZE: Vec2 = Vec2::new(120.0, 20.0);
-const PADDLE_COLOR: Color = MAIN_THEME.Primary;
+const PADDLE_COLOR: Color = MAIN_THEME.primary;
 const PADDLE_SPEED: f32 = 700.0;
 const PADDLE_HIT_BALL_SPEEDUP: f32 = 1.005;
 
 pub struct PaddlePlugin;
 impl Plugin for PaddlePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_paddle)
-            .add_systems(FixedUpdate, move_paddle)
-            .add_systems(FixedUpdate, ball_paddle_collision);
+        app.add_systems(OnEnter(GameState::Playing), setup_paddle)
+            .add_systems(
+                FixedUpdate,
+                (move_paddle, ball_paddle_collision).run_if(in_state(GameState::Playing)),
+            )
+            .add_systems(OnExit(GameState::Playing), cleanup_paddle);
     }
 }
 
@@ -47,6 +51,11 @@ fn setup_paddle(mut commands: Commands) {
         Paddle,
         Collider { size: PADDLE_SIZE },
     ));
+}
+
+fn cleanup_paddle(mut commands: Commands, paddle: Query<Entity, With<Paddle>>) {
+    let entity = paddle.single();
+    commands.entity(entity).despawn_recursive();
 }
 
 fn move_paddle(

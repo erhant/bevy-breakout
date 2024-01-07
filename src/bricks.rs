@@ -6,15 +6,16 @@ use bevy::{
 
 use crate::{
     ball::Ball,
-    game::CollisionSound,
+    game::GameState,
     physics::{Collider, Velocity},
     scoreboard::Scoreboard,
+    sounds::CollisionSound,
     theme::MAIN_THEME,
     wall::{BOTTOM_WALL, LEFT_WALL, RIGHT_WALL, TOP_WALL},
 };
 
 const BRICK_SIZE: Vec2 = Vec2::new(100., 30.);
-const BRICK_COLOR: Color = MAIN_THEME.Primary;
+const BRICK_COLOR: Color = MAIN_THEME.primary;
 const GAP_BETWEEN_PADDLE_AND_BRICKS: f32 = 270.0;
 const GAP_BETWEEN_BRICKS: f32 = 5.0;
 const GAP_BETWEEN_BRICKS_AND_CEILING: f32 = 20.0;
@@ -26,8 +27,12 @@ pub struct Brick;
 pub struct BricksPlugin;
 impl Plugin for BricksPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_bricks)
-            .add_systems(FixedUpdate, brick_ball_collision);
+        app.add_systems(OnEnter(GameState::Playing), setup_bricks)
+            .add_systems(
+                FixedUpdate,
+                brick_ball_collision.run_if(in_state(GameState::Playing)),
+            )
+            .add_systems(OnExit(GameState::Playing), cleanup_bricks);
     }
 }
 
@@ -66,6 +71,12 @@ fn setup_bricks(mut commands: Commands) {
                 Collider { size: BRICK_SIZE },
             ));
         }
+    }
+}
+
+fn cleanup_bricks(mut commands: Commands, bricks: Query<Entity, With<Brick>>) {
+    for entity in bricks.iter() {
+        commands.entity(entity).despawn();
     }
 }
 

@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::game::GameState;
+
 #[derive(Component, Deref, DerefMut)]
 pub struct Velocity(pub Vec2);
 
@@ -11,7 +13,10 @@ pub struct Collider {
 pub struct PhysicsPlugin;
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(FixedUpdate, apply_velocity);
+        app.add_systems(
+            FixedUpdate,
+            apply_velocity.run_if(in_state(GameState::Playing)),
+        );
     }
 }
 

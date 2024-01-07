@@ -6,8 +6,9 @@ use bevy::{
 
 use crate::{
     ball::Ball,
-    game::{CollisionSound, LoseGameSound},
+    game::GameState,
     physics::{Collider, Velocity},
+    sounds::{CollisionSound, LoseGameSound},
     theme::MAIN_THEME,
 };
 
@@ -19,13 +20,16 @@ pub const TOP_WALL: f32 = 300.;
 pub const WALL_THICKNESS: f32 = 10.0;
 const WALL_BLOCK_WIDTH: f32 = RIGHT_WALL - LEFT_WALL;
 const WALL_BLOCK_HEIGHT: f32 = TOP_WALL - BOTTOM_WALL;
-const WALL_COLOR: Color = MAIN_THEME.Error;
+const WALL_COLOR: Color = MAIN_THEME.error;
 
 pub struct WallPlugin;
 impl Plugin for WallPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_wall)
-            .add_systems(FixedUpdate, wall_ball_collision);
+        app.add_systems(OnEnter(GameState::Playing), setup_wall)
+            .add_systems(
+                FixedUpdate,
+                wall_ball_collision.run_if(in_state(GameState::Playing)),
+            );
     }
 }
 
